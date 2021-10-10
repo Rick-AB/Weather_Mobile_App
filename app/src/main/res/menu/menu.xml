@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/sort_menu"
+        android:title="@string/sort_by"
+        android:icon="@drawable/ic_baseline_sort"
+        app:showAsAction="always" >
+
+        <menu>
+            <item android:id="@+id/by_city_asc"
+                android:title="@string/city_asc"
+                android:orderInCategory="100"/>
+            <item android:id="@+id/by_city_dec"
+                android:title="@string/city_dec"
+                android:orderInCategory="100"/>
+            <item android:id="@+id/by_temp_asc"
+                android:title="@string/temp_asc"
+                android:orderInCategory="100"/>
+            <item android:id="@+id/by_temp_dec"
+                android:title="@string/temp_dec"
+                android:orderInCategory="100"/>
+        </menu>
+    </item>
+</menu>

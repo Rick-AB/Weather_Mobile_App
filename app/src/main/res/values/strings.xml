@@ -1,0 +1,16 @@
+<resources>
+    <string name="app_name">Weather App</string>
+    <string name="uv_index">UV index</string>
+    <string name="sunrise">Sunrise</string>
+    <string name="sunset">Sunset</string>
+    <string name="wind">Wind</string>
+    <string name="humidity">Humidity</string>
+    <string name="sort_by">Sort by</string>
+    <string name="city_asc">City (asc)</string>
+    <string name="city_dec">City (dec)</string>
+    <string name="temp_asc">Temp (asc)</string>
+    <string name="temp_dec">Temp (asc)</string>
+    <string name="powered_by">Powered by</string>
+    <string name="open_weather_map">Open Weather Map</string>
+    <string name="error_text">Something went wrong!\nPull down to refresh</string>
+</resources>
