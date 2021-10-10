@@ -10,21 +10,15 @@ import com.example.weather_app.model.OneCallResponse
 import com.example.weather_app.repository.WeatherDetailsRepository
 import com.example.weather_app.util.Constants
 import java.text.SimpleDateFormat
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneId
-import java.time.format.DateTimeFormatterBuilder
-import java.time.temporal.Temporal
-import java.time.temporal.TemporalAccessor
 import java.util.*
 
 class DetailsActivityViewModel(application: Application) : AndroidViewModel(application) {
     private var data: MutableLiveData<OneCallResponse>? = null
     private lateinit var weatherDetailsRepository: WeatherDetailsRepository
-    private val dateTimeFormatter = SimpleDateFormat("EEE dd MMMM h:mm a z", Locale.US)
     private var lat: Double? = null
     private var lon: Double? = null
 
+    //create instance of repo and fetch initial data
     fun init(lat: Double, lon: Double) {
         this.lat = lat
         this.lon = lon
@@ -35,22 +29,27 @@ class DetailsActivityViewModel(application: Application) : AndroidViewModel(appl
         getWeatherDetailsByCoords()
     }
 
+    //returns weather details of selected city
     fun getData(): LiveData<OneCallResponse> {
         return data!!
     }
 
+    //gets weather details of selected city from repo
     fun getWeatherDetailsByCoords() {
         data = weatherDetailsRepository.getWeatherDetailsByCoords(lat!!, lon!!)
     }
 
+    //returns list of daily forecast
     fun getDailyWeather(): LiveData<List<Daily>> {
         return weatherDetailsRepository.dailyWeather
     }
 
+    //returns list of hourly forecast
     fun getHourlyWeather(): LiveData<List<Hourly>> {
         return weatherDetailsRepository.hourlyWeather
     }
 
+    //status of api request
     fun isRefreshing(): LiveData<Boolean> {
         return weatherDetailsRepository.isRefreshing
     }
@@ -59,27 +58,28 @@ class DetailsActivityViewModel(application: Application) : AndroidViewModel(appl
         return "${Constants.WEATHER_ICON_URL}${string}@2x.png"
     }
 
+    //convert uv index to meaningful strings
     fun uvIndexIntensity(uvi: Double): String {
         return when {
             uvi in 0.0..2.0 -> {
-                "Low";
+                "Low"
             }
             uvi in 3.0..5.0 -> {
-                "Moderate";
+                "Moderate"
             }
             uvi in 6.0..7.0 -> {
-                "High";
+                "High"
             }
             uvi >= 8 -> {
-                "Very high";
+                "Very high"
             }
             else -> {
-                "";
+                ""
             }
         }
     }
 
-
+    //format timestamp to readable string
     fun formatDateTime(unix: Int, dateTime: Boolean): String {
         val formatter: SimpleDateFormat = if (dateTime) {
             SimpleDateFormat("EEE dd MMMM h:mm a", Locale.getDefault())

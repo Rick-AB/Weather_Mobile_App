@@ -1,17 +1,17 @@
 package com.example.weather_app
 
 import android.os.Bundle
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.SearchView
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.weather_app.adapter.RecyclerViewAdapter
 import com.example.weather_app.databinding.ActivityMainBinding
 import com.example.weather_app.viewmodel.MainActivityViewModel
+
 
 class MainActivity : AppCompatActivity(), android.widget.SearchView.OnQueryTextListener {
     private lateinit var binding: ActivityMainBinding
@@ -22,22 +22,22 @@ class MainActivity : AppCompatActivity(), android.widget.SearchView.OnQueryTextL
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        viewModel = ViewModelProvider.NewInstanceFactory().create(MainActivityViewModel::class.java)
         observeData()
         initRecyclerView()
         setListeners()
-
     }
+
 
     private fun setListeners() {
         binding.swipeRefresh.setOnRefreshListener { viewModel.refreshWeatherList() }
         binding.searchView.setOnQueryTextListener(this)
     }
 
+    //observe changes in data from data source
     private fun observeData() {
-        viewModel = ViewModelProvider.NewInstanceFactory().create(MainActivityViewModel::class.java)
         viewModel.init()
         viewModel.getWeatherList().observe(this) {
-            Log.d("TAG", "observeData: $it")
             if (it != null && it.isNotEmpty()) {
                 showViews()
                 adapter?.updateList(it)
@@ -51,6 +51,7 @@ class MainActivity : AppCompatActivity(), android.widget.SearchView.OnQueryTextL
         }
     }
 
+    //show view when data is received from source
     private fun showViews() {
         binding.searchView.visibility = View.VISIBLE
         binding.weatherRv.visibility = View.VISIBLE
@@ -61,12 +62,13 @@ class MainActivity : AppCompatActivity(), android.widget.SearchView.OnQueryTextL
         updateViewData()
     }
 
+    //update view when data from source changes
     private fun updateViewData() {
         val lastUpdated = "Last update: ${viewModel.getWeatherList().value!![0].lastUpdated}"
-        Log.d("TAG", "updateViewData: $lastUpdated")
         binding.lastUpdatedTv.text = lastUpdated
     }
 
+    //show error when retrieving data fails
     private fun showError() {
         binding.searchView.visibility = View.GONE
         binding.weatherRv.visibility = View.GONE
@@ -86,6 +88,7 @@ class MainActivity : AppCompatActivity(), android.widget.SearchView.OnQueryTextL
         binding.weatherRv.setHasFixedSize(true)
     }
 
+    //filter list shown in recycler view
     override fun onQueryTextSubmit(query: String?): Boolean {
         adapter?.filter?.filter(query)
         return false
@@ -112,9 +115,18 @@ class MainActivity : AppCompatActivity(), android.widget.SearchView.OnQueryTextL
         return super.onOptionsItemSelected(item)
     }
 
+    private fun checkFocusRec(view: View): Boolean {
+        if (view.isFocused) return true
+        if (view is ViewGroup) {
+            for (i in 0 until view.childCount) {
+                if (checkFocusRec(view.getChildAt(i))) return true
+            }
+        }
+        return false
+    }
+
     override fun onBackPressed() {
-        if (binding.searchView.isInEditMode) {
-            Log.d("TAG", "onBackPressed: ISFL")
+        if (checkFocusRec(binding.searchView)) {
             binding.rootView.requestFocus()
             binding.searchView.clearFocus()
         } else {
@@ -123,6 +135,7 @@ class MainActivity : AppCompatActivity(), android.widget.SearchView.OnQueryTextL
 
     }
 
+    //remove focus from search view when leaving activity
     override fun onPause() {
         super.onPause()
         binding.searchView.setQuery("", false)

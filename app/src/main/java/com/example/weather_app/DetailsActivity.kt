@@ -1,7 +1,6 @@
 package com.example.weather_app
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -10,7 +9,6 @@ import com.bumptech.glide.Glide
 import com.example.weather_app.adapter.DailyWeatherAdapter
 import com.example.weather_app.adapter.HourlyWeatherAdapter
 import com.example.weather_app.databinding.ActivityDetailsBinding
-import com.example.weather_app.util.Constants
 import com.example.weather_app.viewmodel.DetailsActivityViewModel
 
 class DetailsActivity : AppCompatActivity() {
@@ -29,6 +27,7 @@ class DetailsActivity : AppCompatActivity() {
         viewModel = ViewModelProvider.AndroidViewModelFactory(application)
             .create(DetailsActivityViewModel::class.java)
 
+        //get values required for api request
         lat = intent.getDoubleExtra("lat", 0.0)
         lon = intent.getDoubleExtra("lon", 0.0)
         city = intent.getStringExtra("city").toString()
@@ -48,6 +47,7 @@ class DetailsActivity : AppCompatActivity() {
         binding.detailsSwipeRefresh.setOnRefreshListener { viewModel.getWeatherDetailsByCoords() }
     }
 
+    //observe changes in data from data source
     private fun observeData() {
         viewModel.init(lat, lon)
         viewModel.getData().observe(this) {
@@ -69,6 +69,7 @@ class DetailsActivity : AppCompatActivity() {
         }
     }
 
+    //show error when data retrieval fails
     private fun showError() {
         binding.cardViewDetails.visibility = View.GONE
         binding.cardViewDaily.visibility = View.GONE
@@ -79,6 +80,7 @@ class DetailsActivity : AppCompatActivity() {
         binding.detailsErrorTv.visibility = View.VISIBLE
     }
 
+    //show view when data is received from source
     private fun showViews() {
         binding.cardViewDetails.visibility = View.VISIBLE
         binding.cardViewDaily.visibility = View.VISIBLE
@@ -103,6 +105,7 @@ class DetailsActivity : AppCompatActivity() {
         binding.hourlyWeatherRv.layoutManager = hourlyWeatherLayoutManager
     }
 
+    //update views when data changes
     private fun updateView() {
         //details view
         val maxMin =

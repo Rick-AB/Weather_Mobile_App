@@ -2,24 +2,18 @@ package com.example.weather_app.adapter
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.Filter
 import android.widget.Filterable
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.weather_app.DetailsActivity
-import com.example.weather_app.R
 import com.example.weather_app.databinding.WeatherListItemBinding
 import com.example.weather_app.model.WeatherResult
 import com.example.weather_app.util.Constants
-import com.squareup.picasso.Picasso
-import java.util.*
-import kotlin.collections.ArrayList
 
-class RecyclerViewAdapter(private val context: Context, private var list: List<WeatherResult>) :
+class RecyclerViewAdapter(private val context: Context, list: List<WeatherResult>) :
     RecyclerView.Adapter<RecyclerViewAdapter.ViewHolder>(), Filterable {
 
     private var filteredList = list
@@ -78,6 +72,7 @@ class RecyclerViewAdapter(private val context: Context, private var list: List<W
 
     }
 
+    //filter list based on text query
     override fun getFilter(): Filter {
         return object : Filter() {
             override fun performFiltering(constraint: CharSequence?): FilterResults {

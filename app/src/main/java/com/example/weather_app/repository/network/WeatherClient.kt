@@ -8,6 +8,7 @@ class WeatherClient {
     companion object {
         private var mRetrofit: Retrofit? = null
 
+        //create retrofit instance for making api calls
         fun<T> getInstance(service: Class<T>): T {
             if (mRetrofit == null) {
                 val retrofit = Retrofit.Builder()

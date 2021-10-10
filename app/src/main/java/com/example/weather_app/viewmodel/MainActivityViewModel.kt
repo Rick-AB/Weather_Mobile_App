@@ -1,6 +1,5 @@
 package com.example.weather_app.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -10,25 +9,29 @@ import com.example.weather_app.repository.WeatherListRepository
 class MainActivityViewModel : ViewModel() {
     private var weatherList: MutableLiveData<List<WeatherResult>> = MutableLiveData(ArrayList())
     private lateinit var weatherListRepository: WeatherListRepository
-    private var sortBy: String = "asc"
 
+    //create instance of repo and fetch initial data
     fun init() {
         weatherListRepository = WeatherListRepository.getInstance()
         refreshWeatherList()
     }
 
+    //returns list required by activity
     fun getWeatherList(): LiveData<List<WeatherResult>> {
         return weatherList
     }
 
+    //get updated list from repo
     fun refreshWeatherList() {
         weatherList = weatherListRepository.getWeatherDetail()
     }
 
+    //status of api request
     fun getIsRefreshing(): LiveData<Boolean> {
         return weatherListRepository.isRefreshing
     }
 
+    //sort list by city
     fun sortByCity(sortBy: String) {
         val list = weatherList.value!!
         if (sortBy == "asc") {
@@ -40,6 +43,7 @@ class MainActivityViewModel : ViewModel() {
         }
     }
 
+    //sort list by temperature
     fun sortByTemp(sortBy: String) {
         val list = weatherList.value!!
         if (sortBy == "asc") {

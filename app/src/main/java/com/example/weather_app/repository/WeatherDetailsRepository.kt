@@ -17,6 +17,8 @@ class WeatherDetailsRepository {
     private val data = MutableLiveData<OneCallResponse>()
     val dailyWeather = MutableLiveData<List<Daily>>()
     val hourlyWeather = MutableLiveData<List<Hourly>>()
+    var tempDailyList = ArrayList<Daily>()
+    var tempHourlyList = ArrayList<Hourly>()
     val isRefreshing = MutableLiveData(false)
 
     companion object {
@@ -32,11 +34,10 @@ class WeatherDetailsRepository {
         }
     }
 
+    //api request for weather data of specific city
     fun getWeatherDetailsByCoords(lat: Double, lon: Double): MutableLiveData<OneCallResponse> {
-        var dailyList = ArrayList<Daily>()
-        var hourlyList = ArrayList<Hourly>()
-        dailyWeather.value = dailyList
-        hourlyWeather.value = hourlyList
+        dailyWeather.value = tempDailyList
+        hourlyWeather.value = tempHourlyList
 
         isRefreshing.value = true
         CoroutineScope(Dispatchers.IO).launch {
@@ -49,17 +50,17 @@ class WeatherDetailsRepository {
                 isRefreshing.postValue(false)
                 data.postValue(oneCallResponse!!)
 
-                dailyList = ArrayList(oneCallResponse.daily)
-                hourlyList = ArrayList(oneCallResponse.hourly)
-                dailyWeather.postValue(dailyList)
-                hourlyWeather.postValue(hourlyList)
+                tempDailyList = ArrayList(oneCallResponse.daily)
+                tempHourlyList = ArrayList(oneCallResponse.hourly)
+                dailyWeather.postValue(tempDailyList)
+                hourlyWeather.postValue(tempHourlyList)
             }
 
             if (!response.isSuccessful) {
                 isRefreshing.postValue(false)
                 Log.d(
                     "TAG",
-                    "getWeatherDetailsByCoords: SOMETHING HAPPENED ${response.message()}"
+                    "getWeatherDetailsByCoords: What went wrong ${response.raw().message()}"
                 )
             }
         }

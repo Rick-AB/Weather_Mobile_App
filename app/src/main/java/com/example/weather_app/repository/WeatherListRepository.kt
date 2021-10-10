@@ -24,6 +24,7 @@ class WeatherListRepository {
     companion object {
         private var instance: WeatherListRepository? = null
         private lateinit var api: WeatherService
+
         fun getInstance(): WeatherListRepository {
             if (instance == null) {
                 instance = WeatherListRepository()
@@ -35,7 +36,10 @@ class WeatherListRepository {
     }
 
 
+    //api request to get list of weather data
     fun getWeatherDetail(): MutableLiveData<List<WeatherResult>> {
+
+        //formatter for formatting time to readable string
         val formatter = DateTimeFormatterBuilder()
             .parseCaseInsensitive()
             .appendPattern("h:mm a z")
@@ -58,6 +62,7 @@ class WeatherListRepository {
                         weatherResult.sys.img = Constants.CITY_IMAGES[index]
                         weatherResult.lastUpdated = lastUpdated
                         list.add(weatherResult)
+
                         if (index == cities.size - 1) {
                             isRefreshing.postValue(false)
                             result.postValue(list)
@@ -65,7 +70,7 @@ class WeatherListRepository {
                     }
 
                     if (!response.isSuccessful) {
-                        Log.d("TAG", "getDets: SHIIT")
+                        Log.d("TAG", "What went wrong: ${response.raw().message()}")
                         if (index == cities.size - 1) {
                             isRefreshing.postValue(false)
                         }
